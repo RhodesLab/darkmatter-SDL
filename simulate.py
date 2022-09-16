@@ -184,9 +184,9 @@ class SimulationDataset(object):
               rho = 28
               beta = 8.0/3
 
-              vt[0] = sigma*(xt[:, 1]-xt[:, 0])
-              vt[1] = xt[:, 0]*(rho-xt[:, 2])-xt[:, 1]
-              vt[2] = xt[:, 0]*xt[:, 1] - beta*xt[:, 2]
+              vt = vt.at[0].set( sigma*(xt[:, 1]-xt[:, 0]) )
+              vt = vt.at[1].set( xt[:, 0]*(rho-xt[:, 2])-xt[:, 1] )
+              vt = vt.at[2].set( xt[:, 0]*xt[:, 1] - beta*xt[:, 2] )
 
 
           return vt 
