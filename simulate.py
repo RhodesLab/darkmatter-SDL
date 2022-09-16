@@ -184,9 +184,9 @@ class SimulationDataset(object):
               rho = 28
               beta = 8.0/3
 
-              num1 = sigma*(xt[:, 1]-xt[:, 0])
-              num2 = xt[:, 0]*(rho-xt[:, 2])-xt[:, 1]
-              num3 = xt[:, 0]*xt[:, 1] - beta*xt[:, 2]
+              num1 = -1 #sigma*(xt[:, 1]-xt[:, 0])
+              num2 = +1 #xt[:, 0]*(rho-xt[:, 2])-xt[:, 1]
+              num3 = 0 #xt[:, 0]*xt[:, 1] - beta*xt[:, 2]
               vt = vt.at[0].set( num1 )
               vt = vt.at[1].set( num2 )
               vt = vt.at[2].set( num3 )
@@ -202,7 +202,7 @@ class SimulationDataset(object):
           v0 = velocity(y)
 
           print(jax.numpy.asarray(v0))
-          
+
           return np.concatenate(
               [v0,
                a, 0.0*y[:, :params]], axis=1).reshape(packed_shape)  #odefunc gives [velocity (n particles x 2*dim), acceleration(n particles x 2*dim), n particles x [0, 0] ], then reshaped into one list
