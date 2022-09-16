@@ -139,10 +139,10 @@ class SimulationDataset(object):
         dim = self._dim 
 
         sim = self._sim
-        # params = 1
+        params = 1
         # if sim in ['charge']:
         #     params = 2
-        params = 2
+        #params = 2
         total_dim = dim*2+params
         times = self.times
         G = self.G
@@ -186,7 +186,7 @@ class SimulationDataset(object):
 
               print(xt)
               print(jax.eval_shape(xt))
-              
+
               num1 = sigma*(xt[:, 1]-xt[:, 0])
               num2 = xt[:, 0]*(rho-xt[:, 2])-xt[:, 1]
               num3 = xt[:, 0]*xt[:, 1] - beta*xt[:, 2]
