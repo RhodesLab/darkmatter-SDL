@@ -64,6 +64,9 @@ def get_potential(sim, sim_obj): #sim_obj is a simulation object defined below a
           potential += 10000/np.log(1+np.exp(10000*(r-radius)))#ball
           return potential
 
+      elif sim == 'lorenz63':
+          return 0 #no potential
+        
       elif sim in ['charge', 'superposition']:
           charge1 = x1[-2] # location [-2] gives charge
           charge2 = x2[-2]
@@ -136,10 +139,10 @@ class SimulationDataset(object):
         dim = self._dim 
 
         sim = self._sim
-        # params = 1
+        params = 1
         # if sim in ['charge']:
         #     params = 2
-        params = 2
+        #params = 2
         total_dim = dim*2+params
         times = self.times
         G = self.G
@@ -170,14 +173,40 @@ class SimulationDataset(object):
         unpacked_shape = (n, total_dim)
         packed_shape = n*total_dim
 
+        @jit
+        def velocity(xt):
+          vt = xt[:, dim:2*dim] 
+          if sim == 'lorenz63':            
+            if (dim<3):
+              print("dim<3 is not supported for lorenz63")
+            else: 
+              sigma = 10
+              rho = 28
+              beta = 8.0/3
+
+              num1 = sigma*(xt[:, 1]-xt[:, 0])
+              num2 = xt[:, 0]*(rho-xt[:, 2])-xt[:, 1]
+              num3 = xt[:, 0]*xt[:, 1] - beta*xt[:, 2]
+
+              print(vt)
+              vt = vt.at[:, 0].set( num1 )
+              vt = vt.at[:, 1].set( num2 )
+              vt = vt.at[:, 2].set( num3 )
+
+
+          return vt 
 
         @jit
         def odefunc(y, t):
           dim = self._dim
           y = y.reshape(unpacked_shape) #reshape y to n* total_dim matrix
           a = acceleration(y) #calculte acceleration of y
+          v0 = velocity(y)
+
+          print(jax.numpy.asarray(v0))
+
           return np.concatenate(
-              [y[:, dim:2*dim],
+              [v0,
                a, 0.0*y[:, :params]], axis=1).reshape(packed_shape)  #odefunc gives [velocity (n particles x 2*dim), acceleration(n particles x 2*dim), n particles x [0, 0] ], then reshaped into one list
 
         @partial(jit, backend='cpu')
