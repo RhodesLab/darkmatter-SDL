@@ -184,10 +184,10 @@ class SimulationDataset(object):
               rho = 28
               beta = 8.0/3
 
-              num1 = -1 #sigma*(xt[:, 1]-xt[:, 0])
-              num2 = 1 #xt[:, 0]*(rho-xt[:, 2])-xt[:, 1]
-              num3 = 0 #xt[:, 0]*xt[:, 1] - beta*xt[:, 2]
-              
+              num1 = sigma*(xt[:, 1]-xt[:, 0])
+              num2 = xt[:, 0]*(rho-xt[:, 2])-xt[:, 1]
+              num3 = xt[:, 0]*xt[:, 1] - beta*xt[:, 2]
+
               print(vt)
               vt = vt.at[:, 0].set( num1 )
               vt = vt.at[:, 1].set( num2 )
